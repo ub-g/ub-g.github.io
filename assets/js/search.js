@@ -2,10 +2,13 @@ document.addEventListener("DOMContentLoaded", function () {
     let games = [];
     let isDataLoaded = false;
 
-    // Load local games.js file
+    const searchInput = document.getElementById("gameSearch");
+    const gameList = document.getElementById("gameList");
+
+    // Load games from local file
     fetch("/assets/js/games.js")
         .then(response => {
-            if (!response.ok) throw new Error("Network error");
+            if (!response.ok) throw new Error("Error loading games");
             return response.json();
         })
         .then(data => {
@@ -13,16 +16,14 @@ document.addEventListener("DOMContentLoaded", function () {
             isDataLoaded = true;
         })
         .catch(error => {
-            console.error("Fetch error:", error);
-            document.getElementById("gameList").innerHTML = "<p>Error loading games</p>";
+            console.error("Game load error:", error);
+            gameList.innerHTML = "<p style='color:red;'>Error loading games</p>";
         });
 
-    document.getElementById("gameSearch").addEventListener("input", function () {
+    // Search as user types
+    searchInput.addEventListener("input", function () {
         const input = this.value.trim().toLowerCase();
-        const gameList = document.getElementById("gameList");
-        
         gameList.innerHTML = "";
-        gameList.style.display = "block";
 
         if (!input) {
             gameList.style.display = "none";
@@ -31,11 +32,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!isDataLoaded) {
             gameList.innerHTML = "<p>Loading games...</p>";
+            gameList.style.display = "block";
             return;
         }
 
-        const results = games.filter(game => 
-            game.name.toLowerCase().startsWith(input)
+        // Search anywhere in the name
+        const results = games.filter(game =>
+            game.name.toLowerCase().includes(input)
         );
 
         if (results.length > 0) {
@@ -48,11 +51,14 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             gameList.innerHTML = "<p>No results found</p>";
         }
+
+        gameList.style.display = "block";
     });
 
+    // Hide results when clicking outside
     document.addEventListener("click", function (e) {
         if (!e.target.closest("#gameSearch, #gameList")) {
-            document.getElementById("gameList").style.display = "none";
+            gameList.style.display = "none";
         }
     });
 });

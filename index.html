@@ -1323,18 +1323,16 @@
         <script src="/games.js"></script>
 
 
-        <script>
+<script>
 document.addEventListener("DOMContentLoaded", function () {
     const searchForm = document.getElementById("search-form");
     const searchInput = document.getElementById("search-input");
     const searchResults = document.getElementById("search-results");
 
-    // Prevent default form submit
     searchForm.addEventListener("submit", function (e) {
         e.preventDefault();
     });
 
-    // Trigger search on typing
     searchInput.addEventListener("input", function () {
         getDataGame();
     });
@@ -1348,23 +1346,10 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Get all game titles
-        const getTitle = document.querySelectorAll(".list-game .list-title");
-        let matchedGames = [];
-
-        getTitle.forEach(titleEl => {
-            let title = titleEl.textContent.trim();
-            let titleLower = title.toLowerCase();
-            let gameLink = titleEl.parentElement.getAttribute("href");
-
-            // Match only if the title starts with query
-            if (titleLower.startsWith(query)) {
-                matchedGames.push({
-                    link: gameLink,
-                    title: title
-                });
-            }
-        });
+        // Filter from games.js array
+        const matchedGames = games.filter(game => 
+            game.name.toLowerCase().includes(query)
+        );
 
         displayResults(matchedGames);
     }
@@ -1377,8 +1362,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         let html = games.map(game => 
-            `<a href="${game.link}" class="search-result-item">
-                <span>${game.title}</span>
+            `<a href="${game.url}" class="search-result-item">
+                <span>${game.name}</span>
             </a>`
         ).join("");
 
@@ -1386,7 +1371,6 @@ document.addEventListener("DOMContentLoaded", function () {
         searchResults.style.display = "block";
     }
 
-    // Hide results when clicking outside search form
     document.addEventListener("click", function (e) {
         if (!searchForm.contains(e.target)) {
             searchResults.style.display = "none";
@@ -1394,6 +1378,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
 
 
     </body>

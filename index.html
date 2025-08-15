@@ -86,26 +86,23 @@
 
         <!-- bastet-random-game -->
         <div class="container-fluid">
-<!-- Search Bar HTML -->
-<div class="flex flex-col lg:grid lg:grid-cols-6 xl:grid-cols-9">
-    <div class="header-search relative lg:block area-search mt-12">
-        <!-- Search Form -->
-        <form id="search-form" class="search-form w-[100%]">
-            <input type="text" 
-                   class="outline-0 px-4 py-3 border bg-form-input rounded-2xl focus:border-fuchsia-600 w-[100%]" 
-                   id="search-input" 
-                   placeholder="Search games..." 
-                   autocomplete="off">
-            <button type="submit" class="w-[24px] h-[24px]">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14.9536 14.9458L21 21M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" 
-                          stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-            </button>
-        </form>
-
-        <div id="search-results" class="search-results-dropdown"></div>
-    </div>
+<div class="max-w-xl mx-auto mt-8">
+  <div class="flex items-center bg-gray-800 rounded-full shadow-lg p-2 focus-within:ring-2 focus-within:ring-purple-500">
+    <input 
+      type="text" 
+      id="gameSearch" 
+      placeholder="Search games..." 
+      oninput="searchGames()" 
+      class="flex-grow bg-transparent outline-none text-white px-4"
+    >
+    <button onclick="searchGames()" class="p-2 text-purple-400 hover:text-purple-300 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+          d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </button>
+  </div>
+  <div id="gameList" class="bg-gray-900 rounded-lg mt-2 shadow-lg text-white max-h-60 overflow-y-auto hidden"></div>
 </div>
 
             <!-- list popular -->

@@ -2,36 +2,27 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchForm = document.getElementById("search-form");
     const searchInput = document.getElementById("search-input");
     const searchResults = document.getElementById("search-results");
-    const showAllBtn = document.getElementById("show-all-btn");
 
-    // For the search results page
-    const params = new URLSearchParams(window.location.search);
-    const query = params.get("q") ? params.get("q").trim().toLowerCase() : "";
+    // Prevent default form submit
+    searchForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+    });
 
-    if (searchResults) {
-        displayGames(query);
-    }
+    // Trigger search on typing
+    searchInput.addEventListener("input", function () {
+        getDataGame();
+    });
 
-    // Handle search form submit
-    if (searchForm) {
-        searchForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            const term = searchInput.value.trim();
-            if (term.length > 0) {
-                window.location.href = `search.html?q=${encodeURIComponent(term)}`;
-            }
-        });
-    }
+    function getDataGame() {
+        const query = searchInput.value.trim().toLowerCase();
 
-    // Show all games button
-    if (showAllBtn) {
-        showAllBtn.addEventListener("click", function () {
-            window.location.href = "search.html?q=*"; // Special case: show all
-        });
-    }
+        if (query.length < 1) {
+            searchResults.innerHTML = "";
+            searchResults.style.display = "none";
+            return;
+        }
 
-    // Function to filter and display games
-    function displayGames(searchTerm) {
+        // Get all game titles
         const getTitle = document.querySelectorAll(".list-game .list-title");
         let matchedGames = [];
 
@@ -40,20 +31,39 @@ document.addEventListener("DOMContentLoaded", function () {
             let titleLower = title.toLowerCase();
             let gameLink = titleEl.parentElement.getAttribute("href");
 
-            if (searchTerm === "*" || titleLower.startsWith(searchTerm)) {
-                matchedGames.push({ link: gameLink, title: title });
+            // Match only if the title starts with query
+            if (titleLower.startsWith(query)) {
+                matchedGames.push({
+                    link: gameLink,
+                    title: title
+                });
             }
         });
 
-        if (matchedGames.length === 0) {
-            searchResults.innerHTML = "<p>No games found.</p>";
+        displayResults(matchedGames);
+    }
+
+    function displayResults(games) {
+        if (games.length === 0) {
+            searchResults.innerHTML = '<p class="no-results text-gray-500 p-2">No games found</p>';
+            searchResults.style.display = "block";
             return;
         }
 
-        searchResults.innerHTML = matchedGames.map(game =>
+        let html = games.map(game => 
             `<a href="${game.link}" class="search-result-item">
                 <span>${game.title}</span>
             </a>`
         ).join("");
+
+        searchResults.innerHTML = html;
+        searchResults.style.display = "block";
     }
+
+    // Hide results when clicking outside search form
+    document.addEventListener("click", function (e) {
+        if (!searchForm.contains(e.target)) {
+            searchResults.style.display = "none";
+        }
+    });
 });

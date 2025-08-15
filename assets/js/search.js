@@ -11,6 +11,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        if (!Array.isArray(games)) {
+            console.error("Games list not loaded");
+            return;
+        }
+
         const filteredGames = games.filter(game =>
             game.name.toLowerCase().includes(query)
         );

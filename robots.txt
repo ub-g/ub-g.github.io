@@ -10,4 +10,4 @@ Disallow: *?sort=popular
 Allow: /*.js$
 Allow: /*.css$
 
-Sitemap:https://driftboss-online.gitlab.io/sitemap.xml
+Sitemap:https://ub-g.github.io/sitemap.xml

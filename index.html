@@ -1338,45 +1338,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("search-input");
     const searchResults = document.getElementById("search-results");
 
-    // Prevent default form submit
-    searchForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-    });
+    // FULL game list array
+    const allGames = [
+        { title: "Among Us", link: "/among-us" },
+        { title: "Angry Birds", link: "/angry-birds" },
+        { title: "Ball Blast", link: "/ball-blast" },
+        { title: "Drift Hunters", link: "/drift-hunters" },
+        { title: "Geometry Dash", link: "/geometry-dash" },
+        // Add ALL games here from your site
+    ];
 
-    // Trigger search on typing
+    searchForm.addEventListener("submit", e => e.preventDefault());
+
     searchInput.addEventListener("input", function () {
-        getDataGame();
-    });
-
-    function getDataGame() {
         const query = searchInput.value.trim().toLowerCase();
-
         if (query.length < 1) {
             searchResults.innerHTML = "";
             searchResults.style.display = "none";
             return;
         }
 
-        // Get all game titles
-        const getTitle = document.querySelectorAll(".list-game .list-title");
-        let matchedGames = [];
-
-        getTitle.forEach(titleEl => {
-            let title = titleEl.textContent.trim();
-            let titleLower = title.toLowerCase();
-            let gameLink = titleEl.parentElement.getAttribute("href");
-
-            // Match only if the title starts with query
-            if (titleLower.startsWith(query)) {
-                matchedGames.push({
-                    link: gameLink,
-                    title: title
-                });
-            }
-        });
+        const matchedGames = allGames.filter(game =>
+            game.title.toLowerCase().startsWith(query)
+        );
 
         displayResults(matchedGames);
-    }
+    });
 
     function displayResults(games) {
         if (games.length === 0) {
@@ -1385,17 +1372,14 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        let html = games.map(game => 
+        searchResults.innerHTML = games.map(game =>
             `<a href="${game.link}" class="search-result-item">
                 <span>${game.title}</span>
             </a>`
         ).join("");
-
-        searchResults.innerHTML = html;
         searchResults.style.display = "block";
     }
 
-    // Hide results when clicking outside search form
     document.addEventListener("click", function (e) {
         if (!searchForm.contains(e.target)) {
             searchResults.style.display = "none";

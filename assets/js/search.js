@@ -1,3 +1,4 @@
+// search.js
 document.addEventListener("DOMContentLoaded", function () {
     const searchForm = document.getElementById("search-form");
     const searchInput = document.getElementById("search-input");
@@ -12,21 +13,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getDataGame() {
         const query = searchInput.value.trim().toLowerCase();
-
-        const getTitle = $(".list-game .list-title");
-        let matchedGames = [];
-
-        for (let i = 0; i < getTitle.length; i++) {
-            let title = $(getTitle[i]).text().trim().toLowerCase();
-            let gameLink = $(getTitle[i]).parent().attr("href");
-
-            if (query.length === 0 || title.includes(query)) {
-                matchedGames.push({
-                    link: gameLink,
-                    title: $(getTitle[i]).text().trim()
-                });
-            }
+        if (query.length < 1) {
+            searchResults.innerHTML = "";
+            searchResults.style.display = "none";
+            return;
         }
+
+        const matchedGames = gamesList.filter(game =>
+            game.title.toLowerCase().includes(query)
+        );
+
         displayResults(matchedGames);
     }
 
@@ -36,12 +32,13 @@ document.addEventListener("DOMContentLoaded", function () {
             searchResults.style.display = "block";
             return;
         }
-        let html = "";
-        games.forEach((game) => {
-            html += `<a href="${game.link}" class="search-result-item">
-                        <span>${game.title}</span>
-                    </a>`;
-        });
+
+        let html = games.map(game => `
+            <a href="${game.link}" class="search-result-item">
+                <span>${game.title}</span>
+            </a>
+        `).join("");
+
         searchResults.innerHTML = html;
         searchResults.style.display = "block";
     }

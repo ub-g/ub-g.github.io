@@ -86,24 +86,19 @@
 
         <!-- bastet-random-game -->
         <div class="container-fluid">
-<div class="max-w-xl mx-auto mt-8">
-  <div class="flex items-center bg-gray-800 rounded-full shadow-lg p-2 focus-within:ring-2 focus-within:ring-purple-500">
+<div class="search-container relative w-full max-w-sm mx-auto">
     <input 
-      type="text" 
-      id="gameSearch" 
-      placeholder="Search games..." 
-      oninput="searchGames()" 
-      class="flex-grow bg-transparent outline-none text-white px-4"
+        type="text" 
+        id="gameSearch" 
+        placeholder="Search games..." 
+        class="w-full p-2 rounded bg-gray-800 text-white"
     >
-    <button onclick="searchGames()" class="p-2 text-purple-400 hover:text-purple-300 transition">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-          d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg>
-    </button>
-  </div>
-  <div id="gameList" class="bg-gray-900 rounded-lg mt-2 shadow-lg text-white max-h-60 overflow-y-auto hidden"></div>
+    <div 
+        id="gameList" 
+        class="absolute left-0 right-0 mt-1 bg-gray-900 rounded shadow-lg hidden z-50">
+    </div>
 </div>
+
 
             <!-- list popular -->
             <section class="my-12">

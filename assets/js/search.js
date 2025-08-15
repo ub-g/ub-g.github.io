@@ -1,9 +1,9 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     let games = [];
     let isDataLoaded = false;
 
-    // Fetch games
-    fetch("https://ub-g.github.io/assets/js/games.js")
+    // Load local games.js file
+    fetch("/assets/js/games.js")
         .then(response => {
             if (!response.ok) throw new Error("Network error");
             return response.json();
@@ -17,37 +17,32 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("gameList").innerHTML = "<p>Error loading games</p>";
         });
 
-    // Search function
-    document.getElementById("gameSearch").addEventListener("input", function() {
+    document.getElementById("gameSearch").addEventListener("input", function () {
         const input = this.value.trim().toLowerCase();
         const gameList = document.getElementById("gameList");
         
         gameList.innerHTML = "";
         gameList.style.display = "block";
 
-        // Hide if empty
         if (!input) {
             gameList.style.display = "none";
             return;
         }
 
-        // Show loading if data isn't ready
         if (!isDataLoaded) {
             gameList.innerHTML = "<p>Loading games...</p>";
             return;
         }
 
-        // Filter games STARTING with input letter
         const results = games.filter(game => 
             game.name.toLowerCase().startsWith(input)
         );
 
-        // Display results
         if (results.length > 0) {
             results.forEach(game => {
                 const item = document.createElement("div");
                 item.className = "game-item";
-                item.innerHTML = `<a href="https://ub-g.github.io/${game.url}">${game.name}</a>`;
+                item.innerHTML = `<a href="${game.url}">${game.name}</a>`;
                 gameList.appendChild(item);
             });
         } else {
@@ -55,60 +50,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Close results when clicking outside
-    document.addEventListener("click", function(e) {
+    document.addEventListener("click", function (e) {
         if (!e.target.closest("#gameSearch, #gameList")) {
             document.getElementById("gameList").style.display = "none";
-        }
-    });
-});// search.js
-document.addEventListener("DOMContentLoaded", function () {
-    const searchForm = document.getElementById("search-form");
-    const searchInput = document.getElementById("search-input");
-    const searchResults = document.getElementById("search-results");
-
-    searchForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-    });
-
-    searchInput.addEventListener("focus", getDataGame);
-    searchInput.addEventListener("input", getDataGame);
-
-    function getDataGame() {
-        const query = searchInput.value.trim().toLowerCase();
-        if (query.length < 1) {
-            searchResults.innerHTML = "";
-            searchResults.style.display = "none";
-            return;
-        }
-
-        const matchedGames = gamesList.filter(game =>
-            game.title.toLowerCase().includes(query)
-        );
-
-        displayResults(matchedGames);
-    }
-
-    function displayResults(games) {
-        if (games.length === 0) {
-            searchResults.innerHTML = '<p class="no-results text-gray-500 p-2">No games found</p>';
-            searchResults.style.display = "block";
-            return;
-        }
-
-        let html = games.map(game => `
-            <a href="${game.link}" class="search-result-item">
-                <span>${game.title}</span>
-            </a>
-        `).join("");
-
-        searchResults.innerHTML = html;
-        searchResults.style.display = "block";
-    }
-
-    document.addEventListener("click", function (e) {
-        if (!searchForm.contains(e.target)) {
-            searchResults.style.display = "none";
         }
     });
 });

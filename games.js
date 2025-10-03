@@ -541,7 +541,7 @@ const gamesList = [
     { name: "Snakeio", url: "/snakeio.html" },
     { name: "Snakes And Ladders", url: "/snakes-and-ladders.html" },
     { name: "Sniper Gun Shooting", url: "/sniper-gun-shooting.html" },
-    { name: "Snow Rider 3D", url: "/snow-rider-3d.html" },
+    { name: "Snow Rider 3D", url: "/ubg.html" },
     { name: "Soccar", url: "/soccar.html" },
     { name: "Soccer Random", url: "/soccer-random.html" },
     { name: "Soccer Skills Champions League", url: "/soccer-skills-champions-league.html" },

@@ -30,12 +30,6 @@ var cookieNotice = document.getElementById("cookie-notice-bar");
     localStorage.cookieNotice=true;                
     cookieNotice.classList.remove("show");
 });
-//   search holder
-$(".search-holder").click(function (e) {
-if (e.target !== this) return;
-$(this).toggleClass("open");
-});
-
 //   open nav 
 $('.nmi-menu-toggle').click(function(){
             $('#wapMask').toggleClass('maskOpen')
@@ -125,136 +119,10 @@ $.ajax({
 });
 }
 });
-// Search
-var timeSearch = 0, tsearch = "";
-$('.form-search input[name=s]').on('input', function(e) {
-    clearTimeout(timeSearch);
-    $this = $(this);
-    timeSearch = setTimeout(function() {
-        var strInput = $this.val(),
-            query = strInput.toLowerCase();
-        if (query.length > 0) {
-            $.ajax({
-                url: `${domain}/suggest`,
-                data: { s: query },
-                method: "POST",
-                success: function(rs) {
-                    var rsSuggestText = "",
-                        suggestText = "";
-                    query = rs.keyword;
-                   
-                    rs.data.forEach(function(s, index) {
-                        var title = s.title.toLowerCase();
-                        var tmp = title.replace(new RegExp(`${query}`, "g"), `<strong>${query}</strong>`);
-                        rsSuggestText += `<p id="${index+1}" class="s-item">${tmp}</p>`;
-                        if(index==0){
-                            suggestText = title;
-                        }
-                    });
-                   
-                    rsSuggestText = (rsSuggestText.length > 0) ? `<div class="suggestions-holder">${rsSuggestText}</div>` : "";
-                    $this.closest("form").find("#suggestions").html(rsSuggestText);
-                    var match = suggestText.match(new RegExp(`^${query}`,"g"));
-                    suggestText = (match) ? suggestText : "";
-                    suggestText = (suggestText!="")? `${strInput}${suggestText.substr(query.length)}`: "";
-                   
-                    $this.closest("form").find("#suggest-text").html(suggestText);
-                    $this.closest("form").addClass("searching");
-                }
-            });
-        } else {                
-            $this.closest("form").find("#suggestions").html("");
-            $this.closest("form").find("#suggest-text").html("");
-        }
-    }, 300);
-});
-
-$('.form-search input[name=s]').on('keyup', function(e) {
-    var $this = $(this),
-        $frm = $this.closest("form"),
-        suggestText = "";
-    if (e.keyCode == 38 || e.keyCode == 40) {
-        e.preventDefault();
-        var $suggestions = $frm.find("#suggestions .s-item"),
-            $sItemActive = $frm.find("#suggestions .s-item.active"),
-            curIndex = parseInt($sItemActive.attr("id") || 0),
-            maxLength = $suggestions.length;
-
-        if (e.keyCode == 38) {
-            curIndex -= 1;
-        }
-        if (e.keyCode == 40) {
-            curIndex += 1;
-        }
-        curIndex = (curIndex == -1) ? maxLength : curIndex;
-        if (curIndex >= 1 && curIndex <= maxLength) {
-            $frm.find("#suggestions .s-item").removeClass("active");
-            $frm.find(`#suggestions #${curIndex}`).addClass("active");
-            var textSearch = $frm.find(`#suggestions #${curIndex}`).html().trim();
-            textSearch = textSearch.replace(/<strong>|<\/strong>/g, "");
-            $frm.find('input[name="s"]').val(textSearch);
-            $this.closest("form").find("#suggest-text").html("");
-            suggestText = "";
-        } else {                
-            $frm.find("#suggestions .s-item").removeClass("active");
-            $frm.find('input[name="s"]').val(tsearch);
-            suggestText = $frm.find("#suggestions .s-item:nth-child(1)").text() || "";
-        }
-    } else {
-        tsearch = $(this).val();
-        suggestText = $frm.find("#suggestions .s-item:nth-child(1)").text() || "";        
-    }        
-    suggestText = suggestText.replace(/<strong>|<\/strong>/g, "");
-    suggestText = (suggestText!="")? `${tsearch}${suggestText.substr(tsearch.length)}`: "";
-    $frm.find("#suggest-text").html(suggestText);
-});
-
-$('.form-search').click(function(e) {
-    var $this = $(this);
-    setTimeout(function(){
-        $this.closest(".form-search").addClass("searching");
-    }, 1);
-});
 
 $('#header').on("click",".toggle_menu, .close_menu",function(){
     $('#header').toggleClass('show_menu')
 })
-
-$('#header').on("click",".toggle_search, .close_search",function(){
-    $('#header').toggleClass('show_search')
-})
-
-$('.form-search input[name=s]').focusout(function(e) {
-    var $this = $(this);
-    setTimeout(function(){
-        $this.closest(".form-search").removeClass("searching");
-    }, 300);
-});
-
-$(".form-search #suggestions").on("click", ".s-item", function(e) {
-    e.preventDefault();
-    $(this).closest("form").find(".s-item").removeClass("active");
-    $(this).addClass("active");
-    $(this).closest("form").submit();
-});
-
-$('.form-search').submit(function(e) {
-    var textSearch = $(this).find('input[name="s"]').val(),
-        suggestText = $(this).find(".s-item.active").html() || "";
-    textSearch = ((suggestText != "") ? suggestText : textSearch).trim();
-    textSearch = textSearch.replace(/<strong>|<\/strong>/g, "");
-    if (textSearch.length > 0) {
-        $(this).closest("form").find('input[name="s"]').val(textSearch);
-    } else {
-        e.preventDefault();
-    }
-});
-
-$('#search-holder').on('click', function(e) {
-    if (e.target !== this)
-        return;
-    $(this).toggleClass("open");
-});
 
 $('.iconMenuMobile').on('click', function(e) {
   let isShow = $('#dropdownMenuMobile').css('display');
@@ -604,3 +472,20 @@ function setVote(key,item,type){
 $(".toogle_dropdown").on("click",function(){
     $(this).parent().toggleClass('open');
 })
+
+;(function loadSiteSearch() {
+    if (document.getElementById('ubg-search') || window.__ubgSearchLoading) return;
+    window.__ubgSearchLoading = true;
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = '/assets/css/search.css?v=278';
+    document.head.appendChild(css);
+    var gamesScript = document.createElement('script');
+    gamesScript.src = '/games.js?v=278';
+    gamesScript.onload = function () {
+        var searchScript = document.createElement('script');
+        searchScript.src = '/assets/js/search.js?v=278';
+        document.body.appendChild(searchScript);
+    };
+    document.head.appendChild(gamesScript);
+})();
